@@ -6,7 +6,7 @@
 /*   By: yzaytoun <yzaytoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 12:24:07 by yzaytoun          #+#    #+#             */
-/*   Updated: 2024/02/02 16:28:54 by yzaytoun         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:17:59 by yzaytoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,5 @@ t_minitree	*ft_parse_commandline(t_global *global)
 			ft_printerror(NULL, "MiniShell: parser error");
 	}
 	ft_free_tokenlist(&tokenlist);
-	system("leaks minishell");
 	return (parsetree);
 }

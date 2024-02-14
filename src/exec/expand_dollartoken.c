@@ -6,7 +6,7 @@
 /*   By: yzaytoun <yzaytoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 12:35:59 by yzaytoun          #+#    #+#             */
-/*   Updated: 2024/02/02 16:36:55 by yzaytoun         ###   ########.fr       */
+/*   Updated: 2024/02/04 16:20:23 by yzaytoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,29 +54,33 @@ static char	*ft_get_stringvalue(
 }
 
 static void	ft_expand_stringarray(
-		char ***stringarray, int laststatus, t_list *envlist)
+		char **stringarray, int laststatus, t_global *global)
 {
 	int		count;
 	char	*buffer;
 
 	buffer = NULL;
-	if (*stringarray == NULL || envlist == NULL)
+	if (*stringarray == NULL || global->envlist == NULL)
 		return ;
-	count = 0;
-	while ((*stringarray)[count] != NULL)
+	if (global->stringstart == TRUE)
+		count = 1;
+	else
+		count = 0;
+	while (stringarray[count] != NULL)
 	{
-		buffer = ft_get_stringvalue((*stringarray)[count], envlist, laststatus);
+		buffer = ft_get_stringvalue(
+				stringarray[count], global->envlist, laststatus);
 		if (buffer != NULL)
 		{
-			free((*stringarray)[count]);
-			(*stringarray)[count] = buffer;
+			free(stringarray[count]);
+			stringarray[count] = buffer;
 		}
 		count++;
 	}
 }
 
 static char	*ft_expand_dollarchain(
-		const char *fullstring, int laststatus, t_list *envlist)
+	const char *fullstring, int laststatus, t_global *global)
 {
 	char	*expandedstring;
 	char	**stringarray;
@@ -85,13 +89,15 @@ static char	*ft_expand_dollarchain(
 	expandedstring = NULL;
 	stringarray = NULL;
 	list = NULL;
-	if (fullstring == NULL || envlist == NULL)
+	if (fullstring == NULL || global->envlist == NULL)
 		return (NULL);
-	list = ft_get_stringlist(fullstring);
+	list = ft_get_stringlist(fullstring, global);
 	stringarray = ft_lstconvert_strarr(list, 0);
-	ft_expand_stringarray(&stringarray, laststatus, envlist);
+	ft_expand_stringarray(stringarray, laststatus, global);
 	expandedstring = ft_concat_strarray(stringarray, FALSE);
 	ft_clear_strarray(stringarray);
+	ft_lstclear(&list, ft_free_string);
+	global->stringstart = FALSE;
 	return (expandedstring);
 }
 
@@ -106,11 +112,14 @@ char	*ft_expand_dollartoken(const char *argument, t_global *global)
 		return (NULL);
 	dollarcount = ft_chrcount(argument, '$');
 	if (dollarcount >= 1)
-		value = ft_expand_dollarchain(argument, g_exit_status, global->envlist);
+	{
+		value
+			= ft_expand_dollarchain(
+				argument, g_exit_status, global);
+		if (value == NULL)
+			value = ft_strdup("");
+	}
 	else
 		return ((char *)argument);
-	if (value == NULL)
-		value = ft_strdup("");
-	system("leaks minishell");
 	return (value);
 }

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yzaytoun <yzaytoun@student.42.fr>          +#+  +:+       +#+         #
+#    By: jolopez- <jolopez-@student.42madrid>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/01 18:51:45 by jolopez-          #+#    #+#              #
-#    Updated: 2024/02/02 16:27:24 by yzaytoun         ###   ########.fr        #
+#    Updated: 2024/02/04 14:27:44 by jolopez-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,10 +22,10 @@ vpath 			%.o	obj
 USER			= $(shell whoami)
 INCLUDE 		= -Iinclude/
 INC_LIB 		= -Iinclude/libft
-READLINE_LIB	= -I/Users/$(USER)/.brew/opt/readline/include
-INC_READLINE	= -L/Users/$(USER)/.brew/opt/readline/lib
-#INC_READLINE	= -L/usr/local/opt/readline/lib
-#READLINE_LIB	= -I/usr/local/opt/readline/include
+#READLINE_LIB	= -I/Users/$(USER)/.brew/opt/readline/include
+#INC_READLINE	= -L/Users/$(USER)/.brew/opt/readline/lib
+INC_READLINE	= -L/usr/local/opt/readline/lib
+READLINE_LIB	= -I/usr/local/opt/readline/include
 SANITIZER		= -g3 -fsanitize=address -g
 
 READLINE_FLAGS	= -lreadline -ltermcap
@@ -51,7 +51,8 @@ COMMAND			= extract_tokenstring.c copy_tokenlist.c lstconvert.c \
 					checkquotes.c is_validseries.c set_tokenlist.c \
 					extractseries.c fastforward.c is_emptyquotes.c\
 					skip_redirection.c extract_dollarstring.c \
-					token_case.c get_starstring.c get_stringpart.c
+					token_case.c get_starstring.c get_stringpart.c\
+					is_backslash_token.c
 				
 FILE			= filestreams.c create_file.c get_filemode.c is_redirection.c \
 					freefile.c append_filecontent.c delete_filenode.c closepipe.c\
@@ -61,7 +62,8 @@ PARSER			=  separators.c get_tokennode.c tokensplit.c get_nodetype.c \
 					parse_commandline.c $(COMMAND) $(FILE) isvalid_commandlist.c \
 					tokenpairs.c get_tokenpair.c tokenlist_contains.c split_subshell.c\
 					split_tokenlist.c valid_subshellnode.c skip_tokens.c validate_tokenlist.c\
-					contains_sub_tokenlist.c skip_get_tokennode.c is_complete_subshell.c
+					contains_sub_tokenlist.c skip_get_tokennode.c is_complete_subshell.c\
+					expandstring.c emptystring.c skip_quotes.c
 					
 SUMMARIZER		= minisummary.c printtokens.c get_unique_tokens.c \
 					get_token_summary.c get_token_count.c clearsummary.c
@@ -77,7 +79,8 @@ EXEC			= executecommand.c execute_commandline.c \
 				wait_subprocess.c create_subprocess.c execute_subprocess.c \
 				expand_startoken.c expand_dollartoken.c execute_builtin.c \
 				mini_heredoc.c expand_filelist.c execute_pipeline.c wait_close_heredoc.c \
-				get_lstnode.c executer_aux.c execute_subshell.c get_stringlist.c
+				get_lstnode.c executer_aux.c execute_subshell.c get_stringlist.c\
+				get_directorylist.c check_filepermissions.c
 
 SRC 			= $(ENV) $(UTILS) $(SUMMARIZER) $(LEXER) \
 					$(CMD) $(PARSER) $(TREE) $(EXEC)  main.c
@@ -86,7 +89,7 @@ OBJS			=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 
 RM 				=	/bin/rm -rf
 CC 				= 	gcc
-CFLAGS 			= 	-Wall -Werror -Wextra $(INCLUDE) $(INC_LIB) $(READLINE_LIB) -g #$(SANITIZER)
+CFLAGS 			= 	-Wall -Werror -Wextra $(INCLUDE) $(INC_LIB) $(READLINE_LIB) -g 
 
 LIBFT			= 	include/libft/libft.a
 LIBFTDIR		= 	include/libft
